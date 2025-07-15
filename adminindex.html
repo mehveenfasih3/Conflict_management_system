@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<head>
+    <title>Conflict Management</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta charset="UTF-8">
+
+
+    <link href="css/templatemo_style.css" rel="stylesheet" type="text/css">	
+</head>
+<body>
+    <div class="main-container">
+        <nav class="main-nav">
+            <div id="logo" class="left"><a href="#">Conflict Management</a></div>
+            <ul class="nav right center-text">
+                <li class="btn"><a href="login/login.php">Login</a></li>
+                <li class="btn"><a href="login/register.php">Register</a></li>
+                <li class="btn"><a href="index.html">Home</a></li>
+				<li class="btn"><a href="background.html">Conflict Basics</a></li>
+				<li class="btn"><a href="login/admin.php">Requests</a></li>
+
+            </ul>
+            <header style="float: left;margin-left: 22px;">
+             <!--- <h1 class="" >Conflicts</h1> -->
+                <h2 class="" >Here is the case study that discuss conflict in order to learn Conflict Management. </h2>
+            </header>
+            
+        </nav>
+        <div class="content-container">            
+            <div>
+                <div id="portfolio-content" class="center-text">
+                    <div class="portfolio-group">
+                        <a class="portfolio-item">
+
+
+                            <video autoplay="1" class="header-video" id="first_video" preload="1">
+                                <source src="videos/main/movs/RCI01.mp4" width="320" height="240" autoplay>
+                            </video>
+
+
+                            <div class="detail">
+
+                                <h3>Conflict 1</h3>
+                                <p>Conflict with the manager. Click on view to ask questions and to resolve the conflict</p>
+
+
+
+
+                            </div>
+
+
+                        </a>
+
+
+
+                    </div>
+                    <div class="portfolio-group">
+                        <a class="portfolio-item">
+                            <video class="header-video" id="second_video" preload="1">
+                                <source src="videos/main/movs/RCI02.mp4" width="320" height="240" autoplay>
+                            </video>
+
+                            <div class="detail">
+                                <h3>Conflict 2</h3>
+                                <p>Conflict between two employees. Click on view to ask questions and to resolve the conflict</p>
+
+                            </div>
+                        </a>				
+                    </div>
+                    <div class="portfolio-group">
+                        <a class="portfolio-item">
+                            <video class="header-video" id="third_video" preload="1">
+                                <source src="videos/main/movs/RCI03.mp4" width="320" height="240" autoplay>
+                            </video>
+                           
+
+                            <div class="detail">
+                                <h3>Conflict 3</h3>
+                                <p>Conflict between three employees. Click on view to ask questions and to resolve the conflict</p>		
+
+                            </div>
+                        </a>				
+                    </div>
+                   
+                    <div class="portfolio-group">
+                        <a class="portfolio-item ">
+                            
+                            <video id="fourth_video" width="320" height="240" controls="controls">
+                                <source src="videos/main/movs/RCI04.mp4"  type="video/mp4">
+                            </video>
+                       
+                            <div class="detail">
+                                <h3>Conflict 4</h3>
+                                <p>Conflict with the boss. Click on view to ask questions and to resolve the conflict</p>
+
+                        
+                        </a>				
+                    </div>
+                </div>
+
+                    <nav class="main-nav">
+
+                        <ul class="nav right center-text">
+                            <li class="btn"><a href="conflictmain.php ">Conflict b/w managers</a></li>
+
+                        </ul>
+                    </nav>
+
+                    <nav class="main-nav">
+                        <ul class="nav right center-text">
+                            <li class="btn"><a href="conflict2.php">Conflict b/w cowerkers</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="main-nav">
+                        <ul class="nav right center-text">
+                            <li class="btn"><a href="conflict3.php">Conflict b/w peers</a></li>
+                        </ul>
+                    </nav>
+                    
+
+                    <nav class="main-nav">
+                        <ul class="nav right center-text">
+                              <li class="btn" ><a >Message from the CEO</a></li>
+                         
+                         <!-- <button onclick="playVid()" class="videobutton" type="button">Message from the CEO</button> -->
+                          
+                        </ul>
+                    </nav>
+
+
+                    <!--<div class="portfolio-group">
+                    <a href="conflict1.html">View Conflict 1</a>
+                    </div>
+                    
+                    <div class="portfolio-group">
+                    <a href="conflict2.html">View Conflict 2</a>
+                    </div>
+                    
+                    <div class="portfolio-group">
+                    <a href="conflict3.html">View conflict 3</a>
+                    </div>
+                    
+                    <div class="portfolio-group">
+                    <a href="conflict4.html">View conflict 4</a>
+                    </div>-->
+
+
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Copyright 2018-19 &copy;</p>
+        </footer>
+    </div>
+</div>
+<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="js/modernizr.2.5.3.min.js"></script>
+<script type="text/javascript" src="js/templatemo_script.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $('.pagination li').click(changePage);
+        $('.portfolio-item').magnificPopup({
+            type: 'image',
+            gallery: {
+                enabled: true
+            }
+        });
+    });
+    $('#first_video').bind('ended', function() {
+        $('#second_video')[0].play();
+    });
+
+    $('#second_video').bind('ended', function() {
+        $('#third_video')[0].play();
+    });
+
+    $('#third_video').bind('ended', function() {
+        $('#fourth_video')[0].play();
+    });
+    
+     $('#fourth_video').bind('ended', function() {
+        //$('#first_video')[0].play();
+    });
+
+
+
+</script>	
+</body>
+</html>

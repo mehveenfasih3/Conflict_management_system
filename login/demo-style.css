@@ -1,0 +1,54 @@
+#frmForgot { 
+	padding: 20px 60px;
+	background: #B6FFDA;
+	color: #A5A355;
+	display: inline-block;		
+	border-radius: 4px;
+}
+#frmReset { 
+	padding: 20px 60px;
+	
+	color: black;
+	display: inline-block;		
+	border-radius: 4px;
+}
+body {
+    text-align: center;
+}
+
+.field-group {
+	margin-top:25px;
+}
+.input-field {
+	padding: 10px;
+	width: 20em;
+	border: black 1px solid;
+	border-radius: 4px;
+}
+.form-submit-button {
+	background: #13BED0;
+	border: 0;
+	padding: 8px 20px;
+	border-radius: 4px;
+	color: #FFF;
+	text-transform: uppercase;
+}
+.member-dashboard {
+	padding: 40px;
+	background: #D2EDD5;
+	color: #555;
+	border-radius: 4px;
+	display: inline-block;
+}
+.member-dashboard a {
+	color: #09F;
+	text-decoration:none;
+}
+#validation-message {
+	text-align:center;
+	color:#FF0000;
+}
+.success_message {
+	text-align:center;
+	color: #07AB61;
+}
