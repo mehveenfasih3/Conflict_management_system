@@ -42,7 +42,7 @@ if ($usertype == 'user' && $approval == '1') {
        
         else if($usertype == 'admin'){
 
-            header( "Location: ../adminmain1.html");
+            header( "Location: ../adminmain1.php");
             
         }
 

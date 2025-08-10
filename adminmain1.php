@@ -1,4 +1,23 @@
+<?php
+session_start();
+require 'includes/dbconfig.inc.php';
+$userid = $_GET['userid'] ?? 18;  // Example: dashboard.php?userid=5
 
+// Fetch user info
+$sql = "SELECT name, email FROM users WHERE userid = ?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+$name = $user['name'] ?? 'Unknown';
+$email = $user['email'] ?? 'Not Available';
+
+$stmt->close();
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,19 +113,23 @@
 <body>
   <div class="dashboard">
     <h1>Welcome to Admin Dashboard</h1>
-    <div class="user-info">
-      <p><strong>User Name:</strong> Sobia Rasheed</p>
-      <p><strong>Email:</strong> sobiarasheed547@gmail.com</p>
+     <div class="user-info">
+      <p><strong>User Name:</strong> <?php echo htmlspecialchars($name); ?></p>
+      <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
     </div>
 
     <div class="conflict-image">
       <img src="https://tse4.mm.bing.net/th/id/OIP.dGIcdWcKbYnaOAH3-4bvZwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Conflict Management">
     </div>
 
-    <div class="actions">
-      <button   class="btn approve"  ><a href="userapproval.html">User Registration Approval</a></button>
-      <button class="btn reject"> <a href="admin_userdetails.html"> User Detail</a></button>
-    </div>
+   <div class="actions">
+    <button class="btn approve" onclick="window.location.href='userapproval.php'">
+        User Registration Approval
+    </button>
+    <button class="btn reject" onclick="window.location.href='admin_userdetails.php'">
+        User Detail
+    </button>
+</div>
   </div>
 </body>
 </html>

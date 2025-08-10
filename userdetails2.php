@@ -5,25 +5,28 @@ require 'includes/dbconfig.inc.php';
 // Get logged in user ID (fallback to 18 for testing)
 $userid = $_SESSION['userid'] ?? 18;
 
-// Fetch user name and color counts
+// SQL query to fetch counts for red, green, yellow for "conflict 1"
 $sql = "
-    SELECT 
-    u.username,
-    SUM(CASE WHEN status = 'red' THEN 1 ELSE 0 END) AS red_count,
-    SUM(CASE WHEN status = 'green' THEN 1 ELSE 0 END) AS green_count,
-    SUM(CASE WHEN status = 'yellow' THEN 1 ELSE 0 END) AS yellow_count
-FROM your_table_name t
-JOIN users u ON t.user_id = u.id
-WHERE t.user_id = ?
-  AND t.conflict_type = 'conflict 1'
-GROUP BY u.username;
+    SELECT
+        u.name,
+        SUM(CASE WHEN d.colorfeed = 'red' THEN 1 ELSE 0 END) AS red_count,
+        SUM(CASE WHEN d.colorfeed = 'green' THEN 1 ELSE 0 END) AS green_count,
+        SUM(CASE WHEN d.colorfeed = 'yellow' THEN 1 ELSE 0 END) AS yellow_count
+    FROM details d
+    JOIN users u ON d.userid = u.userid
+    WHERE d.userid = ?
+      AND d.conflict_type = 'conflict 1'
+    GROUP BY u.name
 ";
 
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
+
 $stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
-
 $userData = $result->fetch_assoc();
 
 $stmt->close();
@@ -115,9 +118,24 @@ $greenCount = $userData['green_count'] ?? 0;
             text-decoration: none;
             color: white;
         }
+         .back-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #ccc;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: black;
+        }
+        .back-btn:hover {
+            background-color: #bbb;
+        }
     </style>
 </head>
 <body>
+    <a href="admin_userdetails.php" class="back-btn">← Back</a>
     <div class="container">
         <div class="header">
             <h2>Conflict Management System</h2>
@@ -128,10 +146,8 @@ $greenCount = $userData['green_count'] ?? 0;
         </div>
         <div class="review-page">
             <h3>Review Page</h3>
-
             <p>No. of Attempts Allocated: 5</p>
             <p>Attempts Remaining: 1</p>
-
             <div class="attempts">
                 <ul>
                     <li><span class="red"><?= $redCount; ?></span></li>

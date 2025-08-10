@@ -64,7 +64,7 @@ $conn->close();
 </head>
 <body>
 <!-- Back Button -->
-<a href="userdetails2.html" class="back-btn">← Back</a>
+<a href="userdetails2.php" class="back-btn">← Back</a>
 <div class="container">
     <h1>Conflict Feed — Recent Entries</h1>
     <h2>Conflict Type: Conflict 1</h2>
