@@ -1,3 +1,23 @@
+<?php
+session_start();
+require 'includes/dbconfig.inc.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['logged']) || $_SESSION['logged'] !== true) {
+    header("Location: login/login.php");
+    exit;
+}
+
+$userid = $_SESSION['userid'];
+$name = $_GET['name'] ?? 'User';
+
+// Optional redirect if not logged in
+if (!$userid) {
+    echo "<script>alert('User not found. Please login.'); window.location.href = 'login/login.php';</script>";
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <head>
     <title>Conflict Management</title>
@@ -96,7 +116,8 @@
                         </a>				
                     </div>
                 </div>
-
+                
+<!-- 
                     <nav class="main-nav">
 
                         <ul class="nav right center-text">
@@ -122,10 +143,55 @@
                         <ul class="nav right center-text">
                               <li class="btn" ><a >Message from the CEO</a></li>
                          
-                         <!-- <button onclick="playVid()" class="videobutton" type="button">Message from the CEO</button> -->
+                         <button onclick="playVid()" class="videobutton" type="button">Message from the CEO</button> -->
                           
-                        </ul>
-                    </nav>
+                        <!-- </ul>
+                    </nav> --> 
+                    <!-- Keep nav layout and add onclick JavaScript -->
+<nav class="main-nav">
+    <ul class="nav right center-text">
+        <li class="btn">
+            <a href="conflictmain.php?id=<?php echo $userid; ?>" 
+               onclick="saveConflict(event, 'Conflict 1', 'conflictmain.php?id=<?php echo $userid; ?>')">
+               Conflict b/w managers
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<nav class="main-nav">
+    <ul class="nav right center-text">
+        <li class="btn">
+            <a href="conflict2.php?id=<?php echo $userid; ?>" 
+               onclick="saveConflict(event, 'Conflict 2', 'conflict2.php?id=<?php echo $userid; ?>')">
+               Conflict b/w coworkers
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<nav class="main-nav">
+    <ul class="nav right center-text">
+        <li class="btn">
+            <a href="conflict3.php?id=<?php echo $userid; ?>" 
+               onclick="saveConflict(event, 'Conflict 3', 'conflict3.php?id=<?php echo $userid; ?>')">
+               Conflict b/w peers
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<nav class="main-nav">
+    <ul class="nav right center-text">
+        <li class="btn">
+            <a href="#" 
+               onclick="saveConflict(event, 'Conflict 4', '')">
+               Message from the CEO
+            </a>
+        </li>
+    </ul>
+</nav>
+
 
 
                     <!--<div class="portfolio-group">
@@ -182,6 +248,34 @@ $(document).ready(function(){
     });
 
 </script>	
+<script>
+function saveConflict(event, conflictType, redirectUrl) {
+    event.preventDefault();
+
+    fetch('save_conflict.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `conflict_type=${encodeURIComponent(conflictType)}`
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.text();
+    })
+    .then(data => {
+        console.log('Saved:', data);
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save conflict.');
+    });
+}
+
+
+</script>
+
 <script type="text/javascript">
     $(function() {
         $('.pagination li').click(changePage);

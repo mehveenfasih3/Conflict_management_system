@@ -20,51 +20,29 @@ if(isset($_POST['submit'])){ // Fetching variables of the form which travels in 
     $query = mysqli_query($conn,$sql);
    // $query2 = mysqli_query($conn,$sql2);
    
+while ($row = mysqli_fetch_assoc($query)) {
+    session_start();
+    $user_id = $row['userid'];
+    $usertype = $row['reason'];
+    $approval = $row['approval'];
+    // $view = $row['view']; // Assuming this exists in the fetched data.
 
-    while($row=mysqli_fetch_assoc($query))
-    {
-        session_start(); 
-        
-        $view = $row['view'];
-        $user_type = $row['user_type'];
-     
-        $approval = $row['approval'];
-                
-         
+    $_SESSION['logged'] = TRUE;
+}
+echo $user_id;
+echo $usertype;
+echo $approval;
+if ($usertype == 'user' && $approval == '1') {
+    $_SESSION['userid'] = $user_id;
 
-        $_SESSION['logged'] = TRUE; 
-
-    }
- 
-        
-        if($user_type == 'user' && $approval == '1')
-         { 
-            
-          echo "You are now Loggged in";
-
-           if($view == 'conflict1')
-           {
-            
-            header( "Refresh:5; url=../conflictmain.php?name='$view'", true, 303);
-           }
-
-           if($view == 'conflict2')
-           {
-            header( "Refresh:5; url=../conflict2.php?name='$view'", true, 303);
-           }
-
-           if($view == 'conflict3')
-           {
-            header( "Refresh:5; url=../conflict3.php", true, 303);
-           }
-             
-                
-        }
-
+    // Redirect with name and id in the query string
+    header("Location: ../indexmain.php");
+    exit();
+}
        
-        else if($user_type == 'admin'){
+        else if($usertype == 'admin'){
 
-            header( "Location: ../adminindex.html");
+            header( "Location: ../adminmain1.html");
             
         }
 

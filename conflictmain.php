@@ -1,10 +1,16 @@
 <?php
-  session_start(); 
+ session_start();
+ require 'includes/dbconfig.inc.php';
   if(!$_SESSION['logged']){ 
-      header("Location: login/login.php"); 
-      exit; 
+      header("Location: login/login.php");
+      exit;
   }
+// Get the logged-in user ID
+$userid = $_SESSION['userid'];
+echo $userid;
+
 ?>
+
 
 <!doctype html>
 <html>
@@ -24,8 +30,10 @@
                 <br>
                 <h1 style="margin-bottom: 0;float: left;margin-left: 25px;">Conflict with the Manager</h1>
                 <ul class="nav right center-text" style="margin-top: -10px;">
-                    <li class="btn"><a href="indexmain.html">Home</a></li>
+                    <li class="btn"><a href="indexmain.php">Home</a></li>
                     <li class="btn"><a href="index.html">Back</a></li>
+                     <li class="btn"><a href="userdetails2.html">Review</a></li>
+                      <li class="btn"><a href="index.html">Repeat</a></li>
                 </ul>
             </nav>
             <div class="content-container">
@@ -337,6 +345,7 @@
     <script type="text/javascript" src="js/templatemo_script.js"></script>
 
     <script type="text/javascript">
+        
         /*function DisplayVideo() {
             var vid = document.getElementById("sim_video");
             vid.src = this.value;
@@ -354,6 +363,8 @@
                    var vid = document.getElementById("sim_video");
                    var color_text = checked_val.attr('text-color');
                    var text_feed = checked_val.attr('feed_txt');
+                   
+
                    vid.src = checked_val.attr('video-attr');
                    $('.color_feed').css('opacity','0.3');
                    $('.'+color_text+'_feed').css('opacity','1.0');
@@ -366,13 +377,51 @@
                    $('.main_divs').hide();
                    $('#main_'+next_div).show();
                    $('#sim_video').removeAttr('loop');
-                   
-               }
+                  const user_id = <?php echo json_encode($userid); ?>;
+    console.log("User ID:", user_id);
+                   console.log("Color:", color_text);
+console.log("Checked Value:", checked_value);
+console.log("Feedback Text:", text_feed);
+
+ 
+                   $.ajax({
+    url: 'insert_conflict.php',
+    method: 'POST',
+    data: {
+        conflict_type: 'conflict 1', // page name without .php
+        colorfeed: color_text,
+        value: checked_value,
+        text_feed: text_feed,
+        user_id: user_id
+    
+    },
+    success: function(response) {
+        console.log('Inserted:', response);
+    },
+    error: function(xhr, status, error) {
+        console.error('Insert error:', error);
+    }
+});
+                              
+//  var dataForDb = {
+//     conflict_type: 'conflict 1',
+//     colorfeed:      color_text,
+//     value:          checked_value,
+//     text_feed:      text_feed
+// };
+// // echo $dataForDb;
+// $.post(window.location.href, dataForDb)
+
+                
+                }
                else{
                    alert("Please select atleast one.");
+               
                }
-           });            
-        });
+            
+           }); 
+        }        
+        );
     </script>
 </body>
 </html>

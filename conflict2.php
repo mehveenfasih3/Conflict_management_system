@@ -1,9 +1,17 @@
+
+
 <?php
-  session_start(); 
+
+ session_start(); 
+ require 'includes/dbconfig.inc.php';
   if(!$_SESSION['logged']){ 
       header("Location: login/login.php"); 
       exit; 
   }
+// Get the logged-in user ID
+$userid = $_SESSION['userid'];
+
+
 ?>
 
 <!doctype html>
@@ -316,6 +324,31 @@
                     $('#feedback_text').html(text_feed);
                     $('#feedback_text').removeAttr('class');
                     $('#feedback_text').addClass(color_text);
+                     const user_id = <?php echo json_encode($userid); ?>;
+    console.log("User ID:", user_id);
+                   console.log("Color:", color_text);
+console.log("Checked Value:", checked_value);
+console.log("Feedback Text:", text_feed);
+
+ 
+                   $.ajax({
+    url: 'insert_conflict.php',
+    method: 'POST',
+    data: {
+        conflict_type: 'conflict 2', // page name without .php
+        colorfeed: color_text,
+        value: checked_value,
+        text_feed: text_feed,
+        user_id: user_id
+    
+    },
+    success: function(response) {
+        console.log('Inserted:', response);
+    },
+    error: function(xhr, status, error) {
+        console.error('Insert error:', error);
+    }
+});
                 }
                 else {
                     alert("Please select atleast one.");

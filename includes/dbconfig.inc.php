@@ -1,8 +1,8 @@
 <?php
 
-$dbhost = "achbe001.mysql.guardedhost.com";
-$dbuser = "achbe001_conflict";
-$dbpass = "Ttdm73dtC$5a";
+$dbhost = "localhost";
+$dbuser = "root";
+$dbpass = "";
 $dbname = "achbe001_conflict";
 
 $conn = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname); 
