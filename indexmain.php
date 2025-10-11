@@ -16,6 +16,19 @@ if (!$userid) {
     echo "<script>alert('User not found. Please login.'); window.location.href = 'login/login.php';</script>";
     exit();
 }
+$sql = "SELECT view1, view2, view3 FROM users WHERE userid = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
+$permissions = $result->fetch_assoc();
+
+$view1 = $permissions['view1'] ?? '';
+$view2 = $permissions['view2'] ?? '';
+$view3 = $permissions['view3'] ?? '';
+
+$stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -33,10 +46,12 @@ if (!$userid) {
         <nav class="main-nav">
             <div id="logo" class="left"><a href="#">Conflict Management</a></div>
             <ul class="nav right center-text">
-                <li class="btn"><a href="login/login.php">Login</a></li>
-                <li class="btn"><a href="login/register.php">Register</a></li>
+                <!-- <li class="btn"><a href="login/login.php">Login</a></li>
+                <li class="btn"><a href="login/register.php">Register</a></li> -->
                 <li class="btn"><a href="index.html">Home</a></li>
                 <li class="btn"><a href="background.html">Conflict Basics</a></li>
+                <li class="btn"><a href="login/login.php">Logout</a></li>
+               
 
             </ul>
             <header style="float: left;margin-left: 22px;">
@@ -151,10 +166,14 @@ if (!$userid) {
 <nav class="main-nav">
     <ul class="nav right center-text">
         <li class="btn">
-            <a href="conflictmain.php?id=<?php echo $userid; ?>" 
-               onclick="saveConflict(event, 'Conflict 1', 'conflictmain.php?id=<?php echo $userid; ?>')">
-               Conflict b/w managers
-            </a>
+            <?php if ($view1 === 'conflict1') { ?>
+                <a href="conflictmain.php?id=<?php echo $userid; ?>" 
+                   onclick="saveConflict(event, 'Conflict 1', 'conflictmain.php?id=<?php echo $userid; ?>')">
+                   Conflict b/w managers
+                </a>
+            <?php } else { ?>
+                <span class="disabled">Conflict b/w managers</span>
+            <?php } ?>
         </li>
     </ul>
 </nav>
@@ -162,10 +181,14 @@ if (!$userid) {
 <nav class="main-nav">
     <ul class="nav right center-text">
         <li class="btn">
-            <a href="conflict2.php?id=<?php echo $userid; ?>" 
-               onclick="saveConflict(event, 'Conflict 2', 'conflict2.php?id=<?php echo $userid; ?>')">
-               Conflict b/w coworkers
-            </a>
+            <?php if ($view2 === 'conflict2') { ?>
+                <a href="conflict2.php?id=<?php echo $userid; ?>" 
+                   onclick="saveConflict(event, 'Conflict 2', 'conflict2.php?id=<?php echo $userid; ?>')">
+                   Conflict b/w coworkers
+                </a>
+            <?php } else { ?>
+                <span class="disabled">Conflict b/w coworkers</span>
+            <?php } ?>
         </li>
     </ul>
 </nav>
@@ -173,10 +196,14 @@ if (!$userid) {
 <nav class="main-nav">
     <ul class="nav right center-text">
         <li class="btn">
-            <a href="conflict3.php?id=<?php echo $userid; ?>" 
-               onclick="saveConflict(event, 'Conflict 3', 'conflict3.php?id=<?php echo $userid; ?>')">
-               Conflict b/w peers
-            </a>
+            <?php if ($view3 === 'conflict3') { ?>
+                <a href="conflict3.php?id=<?php echo $userid; ?>" 
+                   onclick="saveConflict(event, 'Conflict 3', 'conflict3.php?id=<?php echo $userid; ?>')">
+                   Conflict b/w peers
+                </a>
+            <?php } else { ?>
+                <span class="disabled">Conflict b/w peers</span>
+            <?php } ?>
         </li>
     </ul>
 </nav>
@@ -184,14 +211,20 @@ if (!$userid) {
 <nav class="main-nav">
     <ul class="nav right center-text">
         <li class="btn">
-            <a href="#" 
-               onclick="saveConflict(event, 'Conflict 4', '')">
+            <a href="#" onclick="saveConflict(event, 'Conflict 4', '')">
                Message from the CEO
             </a>
         </li>
     </ul>
 </nav>
 
+<style>
+    .disabled {
+        color: gray;
+        cursor: not-allowed;
+        text-decoration: none;
+    }
+</style>
 
 
                     <!--<div class="portfolio-group">

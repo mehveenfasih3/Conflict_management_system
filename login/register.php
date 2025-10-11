@@ -1,119 +1,109 @@
 <?php
-require 'dbconfig.inc.php';
-
-
-echo $password;
-// Check connection
-
-if($conn === false){
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-}
+require '../includes/dbconfig.inc.php';
 
 $check="DESCRIBE users";
-
 if(mysqli_query($conn,$check)){
+if (isset($_POST['submit'])) {
 
-if(isset($_POST['submit'])){ // Fetching variables of the form which travels in URL
-
-
-    $fname= $_POST['fname'];
-    $email = $_POST['email'];
-    $pass = $_POST['pass'];
-    $view = $_POST['view'];
-    $reason = $_POST['reason'];
+    // Fetch and sanitize inputs
+    $fname = trim($_POST['fname']);
+    $email = trim($_POST['email']);
+    $pass = $_POST['pass'];  // hash it!
+    $reason = trim($_POST['reason']);
     $position = $_POST['dropdown'];
-    $company =  $_POST['company'];
+    $company = trim($_POST['company']);
     
-    //storing the data in your database
-    $sql="INSERT into users(
-        name, email, password, view,user_type,approval,reason, position,company) 
-        values ('$fname', '$email', '$pass', '$view','user','0','$reason','$position','$company')";
+    $selectedViews = isset($_POST['views']) ? $_POST['views'] : [];
 
+    $view1 = '';
+    $view2 = '';
+    $view3 = '';
 
+    foreach ($selectedViews as $view) {
+        if ($view === 'conflict1' && $view1 === '') {
+            $view1 = 'conflict1';
+        } elseif ($view === 'conflict2' && $view2 === '') {
+            $view2 = 'conflict2';
+        } elseif ($view === 'conflict3' && $view3 === '') {
+            $view3 = 'conflict3';
+        }
+    }
 
-if(mysqli_query($conn,$sql))
-{
-   
+    $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
+    $user_type = 'user';
+    $approval = '0';
 
-    echo "Your add has been submited, you will be redirected to your account page in 3 seconds";
+    $sql = "INSERT INTO users 
+            (name, email, password, view1, view2, view3, user_type, approval, reason, position, company) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    header( "Refresh:3; url=../index.html", true, 303);
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Prepare failed: " . htmlspecialchars($conn->error));
+    }
 
-    $sql = "Select * from users " ;
-    $result = mysqli_query($conn,$sql);
-    while($row=mysqli_fetch_assoc($result))
-        {
-            $user = $row['name'];
-            //  echo $user;
+    $stmt->bind_param(
+        "sssssssssss",
+        $fname,
+        $email,
+        $pass,
+        $view1,
+        $view2,
+        $view3,
+        $user_type,
+        $approval,
+        $reason,
+        $position,
+        $company
+    );
+
+    if ($stmt->execute()) {
+        // Success message + redirect
+        echo "Your registration has been submitted. Redirecting...";
+
+        // You may want to use output buffering or avoid echo before header for redirect
+        header("Refresh:3; url=../index.html");
+
+        // Sending mail
+        require("../PHPMailer/src/PHPMailer.php");
+        require("../PHPMailer/src/SMTP.php");
+        require("../PHPMailer/src/Exception.php");
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'emuemms@gmail.com';
+        $mail->Password = 'Sohail12';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        $mail->setFrom('emuemms@gmail.com', 'ConflictManagement');
+        $mail->addReplyTo('emuemms@gmail.com', 'ConflictManagement');
+        $mail->addAddress($email);
+
+        $mail->isHTML(true);
+        $bodyContent = "<div>" . htmlspecialchars($fname) . ",<br><br><p>You will be sent an email confirmation once you have been approved by the admin.<br><br><br></p>Regards,<br> Admin.</div>";
+
+        $mail->Subject = 'Registration Confirmation';
+        $mail->Body    = $bodyContent;
+
+        if(!$mail->send()) {
+            echo 'Message could not be sent.';
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
+        } else {
+            echo 'Please check your email for confirmation.';
         }
 
-require("../PHPMailer/src/PHPMailer.php");
-require("../PHPMailer/src/SMTP.php");
-require("../PHPMailer/src/Exception.php");
-
-$mail = new PHPMailer\PHPMailer\PHPMailer();
-
-$mail->isSMTP();                            // Set mailer to use SMTP
-$mail->Host = 'smtp.gmail.com';             // Specify main and backup SMTP servers
-$mail->SMTPAuth = true;                     // Enable SMTP authentication
-$mail->Username = 'emuemms@gmail.com';      // SMTP username   emuemms@gmail.com
-$mail->Password = 'Sohail12';               // SMTP password   Sohail12
-$mail->SMTPSecure = 'tls';                  // Enable TLS encryption, `ssl` also accepted
-$mail->Port = 587;                          // TCP port to connect to
-
-$mail->setFrom('emuemms@gmail.com', 'ConflictManagement');
-$mail->addReplyTo('emuemms@gmail.com', 'ConflictManagement');
-$mail->addAddress($email);   // Add a recipient
-$mail->addCC('');
-$mail->addBCC('');
-
-$mail->isHTML(true);  // Set email format to HTML
-
-$bodyContent = "<div>" . $user .",<br><br><p>You will be sent an email confirmation once you hav been approved by the admin<br><br><br></p>Regards,<br> Admin.</div>";
-
-
-$mail->Subject = 'Registration Confirmation';
-$mail->Body    = $bodyContent;
-
-if(!$mail->send()) {
-    echo 'Message could not be sent.';
-    echo 'Mailer Error: ' . $mail->ErrorInfo;
-} else {
-    echo 'Please check your email for confirmation.';
-}
-
-}
-else{
-    echo "Insert not successfull.";
-    //  header( "Refresh:5; url=conflictmain.php", true, 303);
-}
- 
- 
+    } else {
+        echo "Insert not successful: " . htmlspecialchars($stmt->error);
     }
-    
-    }
-    
 
-
-
-if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response']))
-{
-      $secret = '6Le3070UAAAAAI-QCCX5sSX9T4j_1j0Pp7aPuapB';
-      $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
-      $responseData = json_decode($verifyResponse);
-      if($responseData->success)
-      {
-          $succMsg = 'Your contact request have submitted successfully.';
-      }
-      else
-      {
-          $errMsg = 'Robot verification failed, please try again.';
-      }
- }
-
-$conn->close();
+    $stmt->close();
+}
+}
 ?>
-
  
 <!DOCTYPE html>
 <head>
@@ -237,19 +227,17 @@ $conn->close();
                <h6 align="left">Select your view         </h6></label>
           
                 
-                <label class="radio-inline control-label">
-                <input type="radio" value="conflict1" name="view" required style="margin-left: 1em"> Conflict 1
-                </label>
+               <label class="checkbox-inline control-label">
+  <input type="checkbox" name="views[]" value="conflict1" style="margin-left: 1em"> Conflict 1
+</label>
 
-                <label class="radio-inline control-label">
+<label class="checkbox-inline control-label">
+  <input type="checkbox" name="views[]" value="conflict2" style="margin-left:1.2em"> Conflict 2
+</label>
 
-                <input type="radio" value="conflict2" name="view" style="margin-left:1.2em"> Conflict 2
-                </label>
-
-                <label class="radio-inline control-label">
-
-                <input type="radio" value="conflict3" name="view" style="margin-left:1.3em"> Conflict 3
-                </label>
+<label class="checkbox-inline control-label">
+  <input type="checkbox" name="views[]" value="conflict3" style="margin-left:1.3em"> Conflict 3
+</label>
             </div>
 
 

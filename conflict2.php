@@ -1,15 +1,14 @@
-
-
 <?php
+session_start();
+require 'includes/dbconfig.inc.php';
 
- session_start(); 
- require 'includes/dbconfig.inc.php';
-  if(!$_SESSION['logged']){ 
-      header("Location: login/login.php"); 
-      exit; 
-  }
-// Get the logged-in user ID
+if (!isset($_SESSION['logged']) || !$_SESSION['logged']) {
+    header("Location: login/login.php");
+    exit;
+}
+
 $userid = $_SESSION['userid'];
+
 
 
 ?>
@@ -39,6 +38,14 @@ $userid = $_SESSION['userid'];
             <ul class="nav right center-text" style="margin-top: -10px;">
                 <li class="btn"><a href="indexmain.html">Home</a></li>
                 <li class="btn"><a href="index.html">Back</a></li>
+                  <li class="btn">
+    <a href="userdetails2.php?userid=<?php echo $userid; ?>&conflictType=conflict 2">
+        Review
+    </a>
+</li>
+                   <!-- <button id="repeat-btn" data-userid="<?php echo $userid; ?>" data-conflict="conflict 2">
+  Repeat
+</button> -->
             </ul>
         </nav>
         <div class="content-container">
@@ -382,7 +389,31 @@ console.log("Feedback Text:", text_feed);
                 }
             }
         });
+
     </script>
+<script>
+document.getElementById('repeat-btn').addEventListener('click', function() {
+  const userid = this.dataset.userid;
+  const conflictType = this.dataset.conflict;
+
+  fetch('repeat_conflict.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'userid=' + encodeURIComponent(userid) + '&conflictType=' + encodeURIComponent(conflictType)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success) {
+      document.getElementById('attempts-left').textContent = 'Attempts left: ' + data.allocated_attempts;
+      alert('Repeat successful!');
+    } else {
+      alert(data.message);
+    }
+  })
+  .catch(err => alert('Error: ' + err));
+});
+</script>
+
 </body>
 </html>
 <?php

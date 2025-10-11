@@ -32,29 +32,51 @@ while ($row = mysqli_fetch_assoc($query)) {
 echo $user_id;
 echo $usertype;
 echo $approval;
+// if ($usertype == 'user' && $approval == '1') {
+//     $_SESSION['userid'] = $user_id;
+
+//     // Redirect with name and id in the query string
+//     header("Location: ../indexmain.php");
+//     exit();
+// }
+       
+//         else if($usertype == 'admin'){
+
+//                 $_SESSION['userid'] = $user_id;
+
+//             header( "Location: ../adminmain1.php");
+            
+//         }
+
+    
+//         else{
+
+//         echo"Login Unsucessfull. Please verify your details.  ";
+//         }
+
+
+//     }
+// }
 if ($usertype == 'user' && $approval == '1') {
     $_SESSION['userid'] = $user_id;
 
     // Redirect with name and id in the query string
     header("Location: ../indexmain.php");
     exit();
+} 
+else if ($usertype == 'admin') {
+    $_SESSION['userid'] = $user_id;
+    header("Location: ../adminmain1.php");
+    exit();
+} 
+else {
+    echo "<script>
+            alert('Your credentials are invalid. Please try again.');
+            window.location.href = '../login/login.php';
+          </script>";
+    exit();
 }
-       
-        else if($usertype == 'admin'){
-
-            header( "Location: ../adminmain1.php");
-            
-        }
-
-    
-        else{
-
-        echo"Login Unsucessfull. Please verify your details.  ";
-        }
-
-
-    }
-}
+}}
 
 ?>
 

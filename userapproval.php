@@ -2,9 +2,13 @@
 // Database connection
 session_start();
 require 'includes/dbconfig.inc.php';
+ if(!$_SESSION['logged']){ 
+      header("Location: login/login.php"); 
+      exit; 
+  }
+// Get the logged-in user ID
+$userid = $_SESSION['userid'];
 
-// If you want the logged-in user instead of hardcoded:
-$userid = $_SESSION['userid'] ?? 18; // fallback to 18 for testing
 // Handle Approve action
 if (isset($_GET['approve'])) {
     $userid = intval($_GET['approve']);
@@ -13,7 +17,21 @@ if (isset($_GET['approve'])) {
     $stmt->bind_param("i", $userid);
     $stmt->execute();
     $stmt->close();
-    header("Location: " . $_SERVER['PHP_SELF']); // Refresh page
+   
+       $allocatedAttempts = 1;
+       $attemptsused=0;
+    $allocatedDate = date('Y-m-d H:i:s', strtotime('+3 days')); // 3 days from now
+
+    $conflicts = ['conflict 1', 'conflict 2', 'conflict 3'];
+    $sqlInsert = "INSERT INTO attempts (userid, conflict, allocated_attempts, allocated_time,attempt_used) VALUES (?, ?, ?, ?,?)";
+    $stmtInsert = $conn->prepare($sqlInsert);
+
+    foreach ($conflicts as $conflict) {
+        $stmtInsert->bind_param("isisi", $userid, $conflict, $allocatedAttempts, $allocatedDate,$attemptsused);
+        $stmtInsert->execute();
+    }
+    $stmtInsert->close();
+     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
 

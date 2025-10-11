@@ -2,29 +2,34 @@
 session_start();
 require 'includes/dbconfig.inc.php';
 
-// Get logged in user ID (fallback to 18 for testing)
-$userid = $_SESSION['userid'] ?? 18;
+// Get values from the link
+$userid = isset($_GET['userid']) ? intval($_GET['userid']) : 0;
+$conflictType = isset($_GET['conflictType']) ? $_GET['conflictType'] : '';
 
-// SQL query to fetch counts for red, green, yellow for "conflict 1"
+if ($userid <= 0 || empty($conflictType)) {
+    die("Invalid request");
+}
+
+// SQL query to fetch counts for red, green, yellow for the given conflictType
 $sql = "
     SELECT
         u.name,
+        u.reason,
         SUM(CASE WHEN d.colorfeed = 'red' THEN 1 ELSE 0 END) AS red_count,
         SUM(CASE WHEN d.colorfeed = 'green' THEN 1 ELSE 0 END) AS green_count,
         SUM(CASE WHEN d.colorfeed = 'yellow' THEN 1 ELSE 0 END) AS yellow_count
     FROM details d
     JOIN users u ON d.userid = u.userid
     WHERE d.userid = ?
-      AND d.conflict_type = 'conflict 1'
-    GROUP BY u.name
+      AND d.conflict_type = ?
+    GROUP BY u.name, u.reason
 ";
-
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
     die("Prepare failed: " . $conn->error);
 }
 
-$stmt->bind_param("i", $userid);
+$stmt->bind_param("is", $userid, $conflictType);
 $stmt->execute();
 $result = $stmt->get_result();
 $userData = $result->fetch_assoc();
@@ -34,6 +39,7 @@ $conn->close();
 
 // Default values if no data found
 $name = $userData['name'] ?? 'Unknown';
+$reason = $userData['reason'] ?? 'user';
 $redCount = $userData['red_count'] ?? 0;
 $yellowCount = $userData['yellow_count'] ?? 0;
 $greenCount = $userData['green_count'] ?? 0;
@@ -135,19 +141,30 @@ $greenCount = $userData['green_count'] ?? 0;
     </style>
 </head>
 <body>
-    <a href="admin_userdetails.php" class="back-btn">← Back</a>
+    <?php
+  if ($reason === "admin") {
+    $link = "admin_userdetails.php";
+} else {
+    $link = "login/login.php";
+}
+?>
+<button class="back-btn" onclick="window.location.href='admin_userdetails.php?userid=<?php echo $userid; ?>&conflictType=<?php echo $conflictType; ?>'">
+   ← Back
+</button>
+
+<!-- <a href="<?php echo $link; ?>" class="back-btn">← Back</a> -->
     <div class="container">
         <div class="header">
             <h2>Conflict Management System</h2>
             <p>Name: <?= htmlspecialchars($name); ?></p>
-            <button class="approve">
-                <a href="userdetails3.php" class="view-link">View</a>
-            </button>
+            <button class="approve" onclick="window.location.href='userdetails3.php?userid=<?php echo $userid; ?>&conflictType=<?php echo $conflictType; ?>'">
+    View
+</button>
         </div>
         <div class="review-page">
             <h3>Review Page</h3>
-            <p>No. of Attempts Allocated: 5</p>
-            <p>Attempts Remaining: 1</p>
+            <!-- <p>No. of Attempts Allocated: 5</p>
+            <p>Attempts Remaining: 1</p> -->
             <div class="attempts">
                 <ul>
                     <li><span class="red"><?= $redCount; ?></span></li>

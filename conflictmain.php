@@ -9,6 +9,40 @@
 $userid = $_SESSION['userid'];
 echo $userid;
 
+$conflict = 'conflict 1';
+
+if (isset($_GET['repeat'])) {
+    $sql = "SELECT allocated_attempts FROM attempts 
+            WHERE userid = ? AND conflict = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $userid, $conflict);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $allocated_attempts = (int)$row['allocated_attempts'];
+
+        if ($allocated_attempts > 0) {
+            // Decrement attempts
+            $updateSql = "UPDATE attempts 
+                          SET allocated_attempts = allocated_attempts - 1 
+                          WHERE userid = ? AND conflict = ?";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bind_param("is", $userid, $conflict);
+            $updateStmt->execute();
+
+            header("Location: conflictmain.php?id=" . $userid);
+            exit;
+        } else {
+            echo "<script>alert('You cannot use this conflict further.'); window.history.back();</script>";
+            exit;
+        }
+    } else {
+        echo "<script>alert('No record found for this conflict.'); window.history.back();</script>";
+        exit;
+    }
+}
+
 ?>
 
 
@@ -32,8 +66,14 @@ echo $userid;
                 <ul class="nav right center-text" style="margin-top: -10px;">
                     <li class="btn"><a href="indexmain.php">Home</a></li>
                     <li class="btn"><a href="index.html">Back</a></li>
-                     <li class="btn"><a href="userdetails2.html">Review</a></li>
-                      <li class="btn"><a href="index.html">Repeat</a></li>
+                    <li class="btn">
+    <a href="userdetails2.php?userid=<?php echo $userid; ?>&conflictType=conflict 1">
+        Review
+    </a>
+</li>
+                    <!-- <li class="btn">
+                    <a href="?repeat=1">Repeat</a> Now triggers the decrement -->
+                <!-- </li> --> 
                 </ul>
             </nav>
             <div class="content-container">

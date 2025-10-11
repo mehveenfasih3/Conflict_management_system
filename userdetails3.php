@@ -2,17 +2,24 @@
 session_start();
 require 'includes/dbconfig.inc.php';
 
-// If you want the logged-in user instead of hardcoded:
-$userid = $_SESSION['userid'] ?? 18; // fallback to 18 for testing
+$userid = isset($_GET['userid']) ? intval($_GET['userid']) : 0;
+$conflictType = isset($_GET['conflictType']) ? $_GET['conflictType'] : '';
 
-// Fetch the data
+if ($userid <= 0 || empty($conflictType)) {
+    die("Invalid request");
+}
+
 $sql = "SELECT conflict_type, colorfeed, value, text_feed, date_time 
         FROM details 
-        WHERE conflict_type = 'conflict 1' AND userid = ? 
+        WHERE conflict_type = ? AND userid = ? 
         ORDER BY date_time DESC";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userid);
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
+
+$stmt->bind_param("si", $conflictType, $userid);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -64,10 +71,13 @@ $conn->close();
 </head>
 <body>
 <!-- Back Button -->
-<a href="userdetails2.php" class="back-btn">← Back</a>
+  <button class="back-btn" onclick="window.location.href='userdetails2.php?userid=<?php echo $userid; ?>&conflictType=<?php echo $conflictType; ?>'">
+   ← Back
+</button>
+  
 <div class="container">
     <h1>Conflict Feed — Recent Entries</h1>
-    <h2>Conflict Type: Conflict 1</h2>
+<h2>Conflict Type: <?php echo $conflictType; ?></h2>
     <table>
         <thead>
             <tr>
