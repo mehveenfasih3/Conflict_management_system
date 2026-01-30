@@ -69,7 +69,7 @@ if (isset($_GET['repeat'])) {
                 <li class="btn"><a href="indexmain.html">Home</a></li>
                 <li class="btn"><a href="index.html">Back</a></li>
                  <li class="btn">
-    <a href="userdetails2.php?userid=<?php echo $userid; ?>&conflictType=conflict 3">
+    <a href="userdetails_user.php?userid=<?php echo $userid; ?>&conflictType=conflict 3">
         Review
     </a>
 </li>

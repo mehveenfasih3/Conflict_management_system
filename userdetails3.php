@@ -83,9 +83,9 @@ $conn->close();
             <tr>
                 <th>S.no</th>
                 <th>ColorFeed</th>
-                <th>Values</th>
+                <!-- <th>Values</th> -->
                 <th>Text</th>
-                <th>Date &amp; Time</th>
+                <!-- <th>Date &amp; Time</th> -->
             </tr>
         </thead>
         <tbody>
@@ -103,9 +103,9 @@ $conn->close();
                     <tr>
                         <td><?= $count++; ?></td>
                         <td><span class="badge <?= $colorClass; ?>"><?= htmlspecialchars(ucfirst($colorValue)); ?></span></td>
-                        <td><span class="val"><?= htmlspecialchars($row['value']); ?></span></td>
+                      
                         <td><?= htmlspecialchars($row['text_feed']); ?></td>
-                        <td><?= htmlspecialchars($row['date_time']); ?></td>
+                        
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

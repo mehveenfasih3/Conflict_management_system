@@ -39,7 +39,7 @@ $userid = $_SESSION['userid'];
                 <li class="btn"><a href="indexmain.html">Home</a></li>
                 <li class="btn"><a href="index.html">Back</a></li>
                   <li class="btn">
-    <a href="userdetails2.php?userid=<?php echo $userid; ?>&conflictType=conflict 2">
+    <a href="userdetails_users.php?userid=<?php echo $userid; ?>&conflictType=conflict 2">
         Review
     </a>
 </li>
@@ -304,9 +304,28 @@ $userid = $_SESSION['userid'];
                 //$('#sim_item2').hide();
                 var checked_val = $('input[name=select]:checked');
                 var checked_value = checked_val.val();
+                
                 if (typeof (checked_value) !== 'undefined' && checked_value !== '') {
+                     if (checked_val.parent().attr('id') === '50c') {
+                    console.log("Reached last div: incrementing attempt...");
+
+                    $.ajax({
+                        url: 'update_attempt.php',
+                        method: 'POST',
+                        data: {
+                            user_id: user_id
+                        },
+                        success: function(response) {
+                            console.log('Attempt updated:', response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Attempt update error:', error);
+                        }
+                    });
+                }
                     var color_text = checked_val.attr('text-color');
                     var text_feed = checked_val.attr('feed_txt');
+                    var selectedText = checked_val.parent().text().trim();
 
 
                     var radioButton = $('input[name=select]:checked', '#Div3').attr('id');
@@ -334,8 +353,9 @@ $userid = $_SESSION['userid'];
                      const user_id = <?php echo json_encode($userid); ?>;
     console.log("User ID:", user_id);
                    console.log("Color:", color_text);
-console.log("Checked Value:", checked_value);
+console.log("Checked Value:", selectedText);
 console.log("Feedback Text:", text_feed);
+var selectedText = checked_val.parent().text().trim();
 
  
                    $.ajax({
@@ -344,7 +364,7 @@ console.log("Feedback Text:", text_feed);
     data: {
         conflict_type: 'conflict 2', // page name without .php
         colorfeed: color_text,
-        value: checked_value,
+        value: selectedText,
         text_feed: text_feed,
         user_id: user_id
     
@@ -356,6 +376,7 @@ console.log("Feedback Text:", text_feed);
         console.error('Insert error:', error);
     }
 });
+
                 }
                 else {
                     alert("Please select atleast one.");
