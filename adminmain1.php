@@ -366,6 +366,8 @@ $conn->close();
 
     <div class="actions">
       <button class="btn approve" onclick="window.location.href='userapproval.php'">User Registration Approval</button>
+      <button class="btn approve" onclick="window.location.href='admin_request_attempt.php'">Requeted Attempts</button>
+    
       <button class="btn reject" onclick="window.location.href='admin_userdetails.php'">User Detail</button>
     </div>
   </div>

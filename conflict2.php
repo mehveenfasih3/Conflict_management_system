@@ -25,6 +25,59 @@ $userid = $_SESSION['userid'];
         #divRadioSrc {
             display: none;
         }
+        
+        /* Completion Modal Styles */
+        .completion-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .completion-modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .completion-icon {
+            font-size: 60px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        
+        .completion-modal h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .completion-modal p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .completion-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .completion-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 
     <link href="css/templatemo_style.css" rel="stylesheet" type="text/css">
@@ -36,10 +89,10 @@ $userid = $_SESSION['userid'];
             <br>
             <h1 style="margin-bottom: 0;float: left;margin-left: 25px;">Conflict between two Employees</h1>
             <ul class="nav right center-text" style="margin-top: -10px;">
-                <li class="btn"><a href="indexmain.html">Home</a></li>
-                <li class="btn"><a href="index.html">Back</a></li>
+                <li class="btn"><a href="#" onclick="return confirmNavigation('indexmain.php')">Home</a></li>
+                <li class="btn"><a href="#" onclick="return confirmNavigation('indexmain.php')">Back</a></li>
                   <li class="btn">
-    <a href="userdetails_users.php?userid=<?php echo $userid; ?>&conflictType=conflict 2">
+    <a href="#" onclick="return confirmNavigation('userdetails_users.php?userid=<?php echo $userid; ?>&conflictType=conflict 2')">
         Review
     </a>
 </li>
@@ -79,6 +132,17 @@ $userid = $_SESSION['userid'];
                 </div>
             </div>
         </div>
+        
+        <!-- Completion Modal -->
+        <div id="completionModal" class="completion-modal">
+            <div class="completion-modal-content">
+                <div class="completion-icon">🎉</div>
+                <h2>Congratulations!</h2>
+                <p>You have successfully completed this module!</p>
+                <button class="completion-btn" onclick="closeCompletionModal()">Continue</button>
+            </div>
+        </div>
+        
         <div id="divRadioSrc">
             <div id="1a" class="major_div"><input type="radio" id="1a1" name="select" value="video2~RCS2A001.mp4" text-color="yellow" feed_txt="You are requesting feedback from the team members, but are failing to offer observation on the situation." video-ids="2d,2e,2f,2g,2c">Is there a problem between you two that I should know about?</div>
             <div id="1b" class="major_div"><input type="radio" id="1b1" name="select" value="video2~RCS2A002.mp4" text-color="red" feed_txt="You need to be more specific in your questioning " video-ids="2a,2b,2c,2d,2e,2f,2g">Why are you two always fighting?</div>
@@ -144,7 +208,7 @@ $userid = $_SESSION['userid'];
             <div id="13b" class="major_div"><input type="radio" id="13b1" name="select" value="video2~RCS2A017.mp4" text-color="yellow" feed_txt="You are requesting feedback from the team member, but suggesting blame while doing so." video-ids="14a,14b,14c">Dan, why aren't you more available to Peter?</div>
             <div id="13c" class="major_div"><input type="radio" id="13c1" name="select" value="video1~RCS2B013.mp4" text-color="green" feed_txt="Good. You are requesting feedback from the team member." video-ids="14a,14b,14c">Peter, how often do you find yourself waiting for Dan's input?</div>
             <div id="13d" class="major_div"><input type="radio" id="13d1" name="select" value="video2~RCS2A017.mp4" text-color="red" feed_txt="You are using an attacking approach and failing to request feedback from the team member." video-ids="14a,14b,14c">Dan, you should be available to give Peter feedback when he needs it.</div>
-            <div id="13e" class="major_div"><input type="radio" id="13e1" name="select" value="video1~RCS2B011.mp4" text-color="red" feed_txt="You are not encouraging the team member to clarify their viewpoint and instead taking sides on the issue." video-ids="">Peter, you must have fallen behind on your responsibilities or else dan wouldn’t be so angry.</div>
+            <div id="13e" class="major_div"><input type="radio" id="13e1" name="select" value="video1~RCS2B011.mp4" text-color="red" feed_txt="You are not encouraging the team member to clarify their viewpoint and instead taking sides on the issue." video-ids="">Peter, you must have fallen behind on your responsibilities or else dan wouldn't be so angry.</div>
             <div id="13f" class="major_div"><input type="radio" id="13f1" name="select" value="video1~RCS2B012.mp4" text-color="red" feed_txt="Good. You are treating the team members fairly." video-ids="14a,14b,14c">Peter, I'm not here to take sides. I want to help you and Dan solve the problem.</div>
             <div id="13g" class="major_div"><input type="radio" id="13g1" name="select" value="video1~RCS2B011.mp4" text-color="red" feed_txt="You are not responding respectfully to the team member. " video-ids="13a,13b,13c,13d">Peter, Calm down. That's ridiculous.</div>
             
@@ -207,7 +271,7 @@ $userid = $_SESSION['userid'];
             <div id="26c" class="major_div"><input type="radio" id="26c1" name="select" value="video1~RCS2B022.mp4" text-color="yellow" feed_txt="You are requesting feedback, but are suggesting blame while doing so. " video-ids="27a,27b,27c">Peter, if you need Dan's input, why don't you just track him down and get the information you need from him?</div>
             <div id="27a" class="major_div"><input type="radio" id="27a1" name="select" value="video1~RCS2B024.mp4" text-color="green" feed_txt="Good. You are requesting feedback by asking an open-ended question. " video-ids="28a,28b">Do you feel that Dan's attitude affected the situation with the phone service?</div>
             <div id="27b" class="major_div"><input type="radio" id="27b1" name="select" value="video1~RCS2B025.mp4" text-color="red" feed_txt="You are showing little concern for the team member's feelings. You are dictating a solution. " video-ids="28a,28b,28c">Regardless of whether or not you like his attitude, you need to learn to deal with it. Getting the support system ﬁnished is top priority.</div>
-            <div id="27c" class="major_div"><input type="radio" id="27c1" name="select" value="video1~RCS2B024.mp4" text-color="yellow" feed_txt="You are requesting feedback, but are asking a yes/no question as opposed to an open-ended question" video-ids="28a,28b">Is that why you didn‘t know that there was a speciﬁc phone service to use?</div>
+            <div id="27c" class="major_div"><input type="radio" id="27c1" name="select" value="video1~RCS2B024.mp4" text-color="yellow" feed_txt="You are requesting feedback, but are asking a yes/no question as opposed to an open-ended question" video-ids="28a,28b">Is that why you didn't know that there was a speciﬁc phone service to use?</div>
             <div id="28a" class="major_div"><input type="radio" id="28a1" name="select" value="video2~RCS2A035.mp4" text-color="red" feed_txt="You are failing to recognize what positiveﬁgure aspects can be gained from this conflict" video-ids="29a,29b,29c">You and Dan seem intent on not getting along. I'm not sure if we'll be able to work this out or not.</div>
             <div id="28b" class="major_div"><input type="radio" id="28b1" name="select" value="video2~RCS2A035.mp4" text-color="green" feed_txt="You are staying positive about the conflict and treating the team member with respect. " video-ids="29a,29b,29c">I think this discussion really helped me get a better idea of what's happening here. Thanks for your input, Peter.</div>
             <div id="28c" class="major_div"><input type="radio" id="28c1" name="select" value="video2~RCS2A035.mp4" text-color="" feed_txt="" video-ids="">Let's get back to the meeting with Dan. There are some things we need to discuss. </div>
@@ -293,6 +357,26 @@ $userid = $_SESSION['userid'];
     <script type="text/javascript" src="js/templatemo_script.js"></script>
 
     <script type="text/javascript">
+        // Navigation confirmation function
+        function confirmNavigation(url) {
+            var confirmed = confirm("Warning: If you leave this page now, your progress will not be saved. Do you want to continue?");
+            if (confirmed) {
+                window.location.href = url;
+                return false;
+            }
+            return false;
+        }
+        
+        // Function to show completion modal
+        function showCompletionModal() {
+            document.getElementById('completionModal').style.display = 'block';
+        }
+        
+        // Function to close completion modal
+        function closeCompletionModal() {
+            document.getElementById('completionModal').style.display = 'none';
+        }
+        
         $(document).ready(function () {
             for (var i = 0; i < 5; i++) {
                 $("#buttonSpeakContainer").before($("<div />").append($('#divRadioSrc .major_div:eq(' + i + ')').clone()).html());
@@ -306,23 +390,33 @@ $userid = $_SESSION['userid'];
                 var checked_value = checked_val.val();
                 
                 if (typeof (checked_value) !== 'undefined' && checked_value !== '') {
-                     if (checked_val.parent().attr('id') === '50c') {
-                    console.log("Reached last div: incrementing attempt...");
-
-                    $.ajax({
-                        url: 'update_attempt.php',
-                        method: 'POST',
-                        data: {
-                            user_id: user_id
-                        },
-                        success: function(response) {
-                            console.log('Attempt updated:', response);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Attempt update error:', error);
-                        }
-                    });
-                }
+                    // Check if this is the last option (50a, 50b, or 50c)
+                    var currentId = checked_val.parent().attr('id');
+                    if (currentId === '50a' || currentId === '50b' || currentId === '50c') {
+                        console.log("Reached last option - showing completion alert");
+                        
+                        // Show completion modal
+                        setTimeout(function() {
+                            showCompletionModal();
+                        }, 500);
+                        
+                        // Update attempt
+                        const user_id = <?php echo json_encode($userid); ?>;
+                        $.ajax({
+                            url: 'update_attempt.php',
+                            method: 'POST',
+                            data: {
+                                user_id: user_id
+                            },
+                            success: function(response) {
+                                console.log('Attempt updated:', response);
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Attempt update error:', error);
+                            }
+                        });
+                    }
+                    
                     var color_text = checked_val.attr('text-color');
                     var text_feed = checked_val.attr('feed_txt');
                     var selectedText = checked_val.parent().text().trim();
@@ -350,36 +444,36 @@ $userid = $_SESSION['userid'];
                     $('#feedback_text').html(text_feed);
                     $('#feedback_text').removeAttr('class');
                     $('#feedback_text').addClass(color_text);
-                     const user_id = <?php echo json_encode($userid); ?>;
-    console.log("User ID:", user_id);
-                   console.log("Color:", color_text);
-console.log("Checked Value:", selectedText);
-console.log("Feedback Text:", text_feed);
-var selectedText = checked_val.parent().text().trim();
+                    const user_id = <?php echo json_encode($userid); ?>;
+                    console.log("User ID:", user_id);
+                    console.log("Color:", color_text);
+                    console.log("Checked Value:", selectedText);
+                    console.log("Feedback Text:", text_feed);
+                    var selectedText = checked_val.parent().text().trim();
 
  
-                   $.ajax({
-    url: 'insert_conflict.php',
-    method: 'POST',
-    data: {
-        conflict_type: 'conflict 2', // page name without .php
-        colorfeed: color_text,
-        value: selectedText,
-        text_feed: text_feed,
-        user_id: user_id
-    
-    },
-    success: function(response) {
-        console.log('Inserted:', response);
-    },
-    error: function(xhr, status, error) {
-        console.error('Insert error:', error);
-    }
-});
+                    $.ajax({
+                        url: 'insert_conflict.php',
+                        method: 'POST',
+                        data: {
+                            conflict_type: 'conflict 2', // page name without .php
+                            colorfeed: color_text,
+                            value: selectedText,
+                            text_feed: text_feed,
+                            user_id: user_id
+                    
+                        },
+                        success: function(response) {
+                            console.log('Inserted:', response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Insert error:', error);
+                        }
+                    });
 
                 }
                 else {
-                    alert("Please select atleast one.");
+                    alert("Please select at least one option.");
                 }
             });
 
@@ -441,5 +535,3 @@ document.getElementById('repeat-btn').addEventListener('click', function() {
 session_destroy();
 
 ?>
-
-
